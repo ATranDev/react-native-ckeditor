@@ -1,13 +1,8 @@
-import React from "react";
-import {
-  ActivityIndicator,
-  Alert,
-  StyleSheet,
-  View
-  // WebView
-} from "react-native";
-import { WebView } from "react-native-webview";
-const webapp = require("./index.html");
+import React from 'react';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
+
+const webapp = require('./index.html');
 
 // fix https://github.com/facebook/react-native/issues/10865
 const patchPostMessageJsCode = `(${String(function() {
@@ -16,29 +11,22 @@ const patchPostMessageJsCode = `(${String(function() {
     originalPostMessage(message, targetOrigin, transfer);
   };
   patchedPostMessage.toString = function() {
-    return String(Object.hasOwnProperty).replace(
-      "hasOwnProperty",
-      "postMessage"
-    );
+    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
   };
   window.postMessage = patchedPostMessage;
 })})();`;
 
 class CKEditor extends React.Component {
   state = {
-    webViewNotLoaded: true
+    webViewNotLoaded: true,
   };
 
   onError = error => {
-    Alert.alert("WebView onError", error, [
-      { text: "OK", onPress: () => console.log("OK Pressed") }
-    ]);
+    Alert.alert('WebView onError', error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
   };
 
   renderError = error => {
-    Alert.alert("WebView renderError", error, [
-      { text: "OK", onPress: () => console.log("OK Pressed") }
-    ]);
+    Alert.alert('WebView renderError', error, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
   };
 
   createWebViewRef = webview => {
@@ -54,11 +42,11 @@ class CKEditor extends React.Component {
   };
 
   handleMessage = event => {
-    console.log("event", event);
+    console.log('event', event);
     let msgData;
     try {
       msgData = event.nativeEvent.data;
-      console.log("msgData", msgData);
+      console.log('msgData', msgData);
       this.props.onChange(msgData);
     } catch (err) {
       console.warn(err);
@@ -67,7 +55,7 @@ class CKEditor extends React.Component {
   };
 
   onWebViewLoaded = () => {
-    console.log("Webview loaded");
+    console.log('Webview loaded');
     this.setState({ webViewNotLoaded: false });
     this.postMessage(this.props.content);
   };
@@ -76,11 +64,7 @@ class CKEditor extends React.Component {
     return (
       <View style={styles.activityOverlayStyle}>
         <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator
-            size="large"
-            animating={this.state.webViewNotLoaded}
-            color="green"
-          />
+          <ActivityIndicator size="large" animating={this.state.webViewNotLoaded} color="green" />
         </View>
       </View>
     );
@@ -91,7 +75,7 @@ class CKEditor extends React.Component {
       <WebView
         ref={this.createWebViewRef}
         injectedJavaScript={patchPostMessageJsCode}
-        style={{ marginTop: 20 }}
+        style={{ marginTop: 20, width: 400, height: 400 }}
         scrollEnabled={false}
         source={webapp}
         scalesPageToFit={false}
@@ -110,24 +94,24 @@ class CKEditor extends React.Component {
 const styles = StyleSheet.create({
   activityOverlayStyle: {
     ...StyleSheet.absoluteFillObject,
-    display: "flex",
-    justifyContent: "center",
-    alignContent: "center",
-    borderRadius: 0
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
+    borderRadius: 0,
   },
   activityIndicatorContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 50,
-    alignSelf: "center",
-    shadowColor: "#000000",
+    alignSelf: 'center',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 3
+      height: 3,
     },
     shadowRadius: 5,
-    shadowOpacity: 1.0
-  }
+    shadowOpacity: 1.0,
+  },
 });
 
 export default CKEditor;

@@ -16,5 +16,8 @@
     "ckeditor"
   ],
   "author": "Vitaly Liber",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "react-native-webview": "^7.0.5"
+  }
 }
